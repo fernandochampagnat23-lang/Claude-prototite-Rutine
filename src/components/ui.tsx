@@ -26,7 +26,7 @@ export function Button({
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center gap-2 font-semibold select-none transition disabled:opacity-40 disabled:pointer-events-none ${sizes[size]} ${VARIANTS[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 font-semibold select-none transition disabled:pointer-events-none disabled:border-line! disabled:bg-surface-2! disabled:text-muted! ${sizes[size]} ${VARIANTS[variant]} ${className}`}
       {...props}
     >
       {children}
@@ -182,6 +182,15 @@ export function Sheet({
         </div>
         <div className="pb-4">{children}</div>
       </div>
+    </div>
+  );
+}
+
+/** Barra fija sobre la navegación inferior para la acción principal de cada paso. */
+export function StickyAction({ children }: { children: ReactNode }) {
+  return (
+    <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 -mx-4 mt-6 border-t border-line bg-bg/95 px-4 py-3 backdrop-blur">
+      {children}
     </div>
   );
 }

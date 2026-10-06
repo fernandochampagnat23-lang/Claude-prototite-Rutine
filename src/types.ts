@@ -92,6 +92,8 @@ export interface Session {
   triggers: Trigger[];
   notes: string;
   walkMinutes?: number;
+  /** Inicio del cronómetro de la caminata de cierre, si está corriendo. */
+  walkStartedAt?: number;
   /** Regla de oro por sesión: dolor post ≥ dolor inicial + 2. */
   goldenRule?: boolean;
   /** Ejercicios señalados como sospechosos cuando se activa la regla de oro. */
