@@ -23,6 +23,8 @@ export interface Exercise {
   weighted: boolean;
   /** El peso es asistencia (menos peso = más difícil), como en dominadas asistidas. */
   assisted?: boolean;
+  /** Incremento de los botones de peso (2,5 kg por defecto; 1 kg en mancuernas). */
+  weightStep?: number;
   /** Clave de técnica corta. */
   technique: string;
   /** Ruta relativa dentro de /public (por ejemplo "exercises/press-pecho-maquina.png"). */

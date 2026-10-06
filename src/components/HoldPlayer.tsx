@@ -18,6 +18,8 @@ export function HoldPlayer({
   reps,
   holdSeconds,
   relaxSeconds = 3,
+  repLabel = 'Repetición',
+  relaxLabel = 'Relaja',
   onComplete,
   onClose,
 }: {
@@ -26,6 +28,8 @@ export function HoldPlayer({
   reps: number;
   holdSeconds: number;
   relaxSeconds?: number;
+  repLabel?: string;
+  relaxLabel?: string;
   onComplete: () => void;
   onClose: () => void;
 }) {
@@ -86,7 +90,7 @@ export function HoldPlayer({
     }
   };
 
-  const label = { ready: 'Prepárate', hold: 'Aguanta', relax: 'Relaja', done: '¡Serie hecha!' }[phase];
+  const label = { ready: 'Prepárate', hold: 'Aguanta', relax: relaxLabel, done: '¡Serie hecha!' }[phase];
   const color = { ready: 'text-warn', hold: 'text-accent', relax: 'text-muted', done: 'text-accent' }[phase];
   const radius = 110;
   const circumference = 2 * Math.PI * radius;
@@ -131,7 +135,7 @@ export function HoldPlayer({
         </div>
         {reps > 1 && (
           <p className="text-xl font-semibold">
-            Repetición {rep} de {reps}
+            {repLabel} {rep} de {reps}
           </p>
         )}
       </div>

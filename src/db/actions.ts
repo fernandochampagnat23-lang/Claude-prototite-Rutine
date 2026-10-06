@@ -99,3 +99,80 @@ export async function finishSession(id: number, input: FinishInput): Promise<Ses
     return { ...session, ...changes };
   });
 }
+
+export interface SetInput {
+  weight?: number;
+  value?: number;
+  done: boolean;
+}
+
+/** Guarda (o actualiza) una serie de un ejercicio de la sesión. */
+export async function saveSet(
+  sessionId: number,
+  itemUid: string,
+  exerciseId: string,
+  setIndex: number,
+  input: SetInput,
+): Promise<void> {
+  await db.transaction('rw', db.setLogs, async () => {
+    const existing = await db.setLogs
+      .where('[sessionId+itemUid]')
+      .equals([sessionId, itemUid])
+      .filter((log) => log.exerciseId === exerciseId && log.setIndex === setIndex)
+      .first();
+    const log = { sessionId, itemUid, exerciseId, setIndex, ...input, at: Date.now() };
+    if (existing) await db.setLogs.put({ ...log, id: existing.id });
+    else await db.setLogs.add(log);
+  });
+}
+
+/** Registra un "me dolió". Si bajó a la pierna, marca el ejercicio en rojo. */
+export async function addPainEvent(sessionId: number, exerciseId: string, radiatesToLeg: boolean): Promise<void> {
+  const now = Date.now();
+  const date = toDateKey(now);
+  await db.transaction('rw', db.painEvents, db.flags, async () => {
+    await db.painEvents.add({ sessionId, exerciseId, radiatesToLeg, date, at: now });
+    if (radiatesToLeg) await db.flags.put({ exerciseId, reason: 'pierna', date, at: now, sessionId });
+  });
+}
+
+/** Cambia el ejercicio de un ítem en la sesión y, opcionalmente, también en la rutina. */
+export async function replaceExercise(
+  sessionId: number | undefined,
+  dayId: number,
+  itemUid: string,
+  exerciseId: string,
+  alsoInRoutine: boolean,
+): Promise<void> {
+  await db.transaction('rw', db.sessions, db.routineDays, async () => {
+    if (sessionId !== undefined) {
+      const session = await db.sessions.get(sessionId);
+      if (session) {
+        const items = session.items.map((item) => (item.uid === itemUid ? { ...item, exerciseId } : item));
+        await db.sessions.update(sessionId, { items });
+      }
+    }
+    if (alsoInRoutine) {
+      const day = await db.routineDays.get(dayId);
+      if (day) {
+        const items = day.items.map((item) => (item.uid === itemUid ? { ...item, exerciseId } : item));
+        await db.routineDays.put({ ...day, items });
+      }
+    }
+  });
+}
+
+export async function toggleSkip(sessionId: number, itemUid: string): Promise<void> {
+  await db.transaction('rw', db.sessions, async () => {
+    const session = await db.sessions.get(sessionId);
+    if (!session) return;
+    const skipped = session.skipped.includes(itemUid)
+      ? session.skipped.filter((uid) => uid !== itemUid)
+      : [...session.skipped, itemUid];
+    await db.sessions.update(sessionId, { skipped });
+  });
+}
+
+export async function dismissFlag(exerciseId: string): Promise<void> {
+  await db.flags.delete(exerciseId);
+}

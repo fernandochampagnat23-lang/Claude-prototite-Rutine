@@ -102,6 +102,7 @@ export function Stepper({
   min = 0,
   label,
   suffix,
+  placeholder = 0,
 }: {
   value: number | undefined;
   onChange: (value: number | undefined) => void;
@@ -109,8 +110,10 @@ export function Stepper({
   min?: number;
   label: string;
   suffix?: string;
+  /** Valor sugerido cuando está vacío; los botones parten de él. */
+  placeholder?: number;
 }) {
-  const current = value ?? 0;
+  const current = value ?? placeholder;
   const set = (next: number) => onChange(Math.max(min, Math.round(next * 100) / 100));
   return (
     <div className="flex items-stretch rounded-xl border border-line bg-surface-2 overflow-hidden">
@@ -118,7 +121,7 @@ export function Stepper({
         type="button"
         aria-label={`Restar ${step} a ${label}`}
         onClick={() => set(current - step)}
-        className="w-11 shrink-0 text-2xl font-bold text-muted active:bg-line"
+        className="w-10 shrink-0 text-2xl font-bold text-muted active:bg-line"
       >
         −
       </button>
@@ -128,13 +131,13 @@ export function Stepper({
           type="number"
           inputMode="decimal"
           value={value ?? ''}
-          placeholder="0"
+          placeholder={String(placeholder)}
           onChange={(event) => {
             const raw = event.target.value.replace(',', '.');
             onChange(raw === '' ? undefined : Number(raw));
           }}
           onFocus={(event) => event.target.select()}
-          className="w-full bg-transparent text-center text-xl font-bold outline-none"
+          className="w-full bg-transparent text-center text-xl font-bold outline-none placeholder:text-ink/60"
         />
         {suffix && <span className="text-[11px] leading-none text-muted">{suffix}</span>}
       </label>
@@ -142,7 +145,7 @@ export function Stepper({
         type="button"
         aria-label={`Sumar ${step} a ${label}`}
         onClick={() => set(current + step)}
-        className="w-11 shrink-0 text-2xl font-bold text-muted active:bg-line"
+        className="w-10 shrink-0 text-2xl font-bold text-muted active:bg-line"
       >
         +
       </button>

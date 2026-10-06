@@ -52,6 +52,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'pecho',
     weighted: true,
+    weightStep: 1,
     technique: 'Banco a 30°. Sube las mancuernas a los muslos sentado antes de reclinarte; no las levantes desde el suelo doblado.',
     alternatives: ['press-inclinado-maquina', 'press-pecho-maquina'],
   },
@@ -79,6 +80,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'pecho',
     weighted: true,
+    weightStep: 1,
     technique: 'Pies en el suelo o sobre el banco, lumbar neutra. Sube las mancuernas sentado antes de acostarte.',
     alternatives: ['press-pecho-maquina'],
   },
@@ -88,6 +90,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'pecho',
     weighted: true,
+    weightStep: 1,
     technique: 'Peso ligero, codos levemente doblados. Baja hasta sentir el estiramiento, sin arquear.',
     alternatives: ['pec-deck'],
   },
@@ -108,6 +111,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'hombro',
     weighted: true,
+    weightStep: 1,
     technique: 'Sentado y erguido, sube hasta la altura de los hombros sin balancear el tronco.',
     alternatives: ['elevaciones-laterales-polea'],
   },
@@ -117,6 +121,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'hombro',
     weighted: true,
+    weightStep: 1,
     technique: 'Respaldo vertical, espalda pegada. Peso moderado, sin arquear para terminar la repetición.',
     alternatives: ['press-hombro-maquina'],
   },
@@ -153,6 +158,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'hombro',
     weighted: true,
+    weightStep: 1,
     technique: 'Pecho apoyado en el banco, mancuernas ligeras. Abre los brazos sin despegar el pecho.',
     alternatives: ['pec-deck-invertido'],
   },
@@ -182,6 +188,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'triceps',
     weighted: true,
+    weightStep: 1,
     technique: 'Acostado en banco plano, codos apuntando al techo. Baja las mancuernas junto a la cabeza.',
     alternatives: ['triceps-polea'],
   },
@@ -211,6 +218,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'espalda',
     weighted: true,
+    weightStep: 1,
     technique: 'Mano y rodilla en el banco, espalda plana. Tira la mancuerna hacia la cadera sin girar el tronco.',
     alternatives: ['remo-maquina-apoyo-pecho', 'remo-mancuerna-banco-inclinado'],
   },
@@ -248,6 +256,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'espalda',
     weighted: true,
+    weightStep: 1,
     technique: 'Pecho apoyado en banco a 30–45°. Tira las mancuernas hacia la cadera sin despegar el pecho.',
     alternatives: ['remo-maquina-apoyo-pecho'],
   },
@@ -259,6 +268,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'biceps',
     weighted: true,
+    weightStep: 1,
     technique: 'Espalda apoyada en el banco, brazos colgando. Sube sin adelantar los codos.',
     alternatives: ['curl-predicador', 'biceps-polea'],
   },
@@ -268,6 +278,7 @@ const base: Exercise[] = [
     kind: 'reps',
     group: 'biceps',
     weighted: true,
+    weightStep: 1,
     technique: 'Sentado con respaldo, palmas enfrentadas. Sube sin balancear el tronco.',
     alternatives: ['curl-predicador', 'biceps-polea'],
   },
@@ -443,6 +454,7 @@ const base: Exercise[] = [
     kind: 'distance',
     group: 'core',
     weighted: true,
+    weightStep: 1,
     technique: 'Mancuerna en una mano, camina erguido sin inclinarte hacia el peso.',
     alternatives: ['pallof-press', 'plancha-lateral'],
   },
@@ -494,6 +506,8 @@ export const WALK_ID = 'caminata-cinta';
 
 /** Esquema de series descendentes del calentamiento McGill. */
 export const MCGILL_SERIES = [5, 3, 1] as const;
+
+export const DEFAULT_WEIGHT_STEP = 2.5;
 
 export function youtubeUrl(name: string): string {
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(`${name} técnica`)}`;
