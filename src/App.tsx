@@ -1,10 +1,13 @@
+import { lazy, Suspense } from 'react';
 import { NavLink, Navigate, Route, Routes, useLocation, Link } from 'react-router-dom';
 import { BookOpen, CalendarDays, Dumbbell, LineChart, Settings as SettingsIcon } from 'lucide-react';
 import { Today } from './screens/Today';
 import { Routine } from './screens/Routine';
-import { Progress } from './screens/Progress';
 import { Guide } from './screens/Guide';
 import { SettingsScreen } from './screens/Settings';
+
+// Progreso carga los gráficos (la parte más pesada) solo cuando se abre.
+const Progress = lazy(() => import('./screens/Progress').then((m) => ({ default: m.Progress })));
 
 const TABS = [
   { to: '/hoy', label: 'Hoy', icon: Dumbbell },
@@ -45,7 +48,14 @@ export default function App() {
           <Route path="/" element={<Navigate to="/hoy" replace />} />
           <Route path="/hoy" element={<Today />} />
           <Route path="/rutina" element={<Routine />} />
-          <Route path="/progreso" element={<Progress />} />
+          <Route
+            path="/progreso"
+            element={
+              <Suspense fallback={<p className="text-muted">Cargando…</p>}>
+                <Progress />
+              </Suspense>
+            }
+          />
           <Route path="/guia" element={<Guide />} />
           <Route path="/ajustes" element={<SettingsScreen />} />
           <Route path="*" element={<Navigate to="/hoy" replace />} />
