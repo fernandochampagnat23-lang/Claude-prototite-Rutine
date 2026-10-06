@@ -1,7 +1,7 @@
 import { db } from './db';
 import { toDateKey } from '../logic/dates';
 import { evaluateSession } from '../logic/goldenRule';
-import type { PainCheck, Session, SessionStep, Trigger } from '../types';
+import type { CheckIn, PainCheck, RoutineItem, Session, SessionStep, Trigger } from '../types';
 
 export async function startSession(dayId: number): Promise<number> {
   const day = await db.routineDays.get(dayId);
@@ -136,6 +136,12 @@ export async function addPainEvent(sessionId: number, exerciseId: string, radiat
   });
 }
 
+/** La nota y el carácter opcional eran del ejercicio anterior (p. ej. "si hay máquina"), así que no se heredan. */
+function swap(item: RoutineItem, exerciseId: string): RoutineItem {
+  const { note: _note, optional: _optional, ...rest } = item;
+  return { ...rest, exerciseId };
+}
+
 /** Cambia el ejercicio de un ítem en la sesión y, opcionalmente, también en la rutina. */
 export async function replaceExercise(
   sessionId: number | undefined,
@@ -148,14 +154,14 @@ export async function replaceExercise(
     if (sessionId !== undefined) {
       const session = await db.sessions.get(sessionId);
       if (session) {
-        const items = session.items.map((item) => (item.uid === itemUid ? { ...item, exerciseId } : item));
+        const items = session.items.map((item) => (item.uid === itemUid ? swap(item, exerciseId) : item));
         await db.sessions.update(sessionId, { items });
       }
     }
     if (alsoInRoutine) {
       const day = await db.routineDays.get(dayId);
       if (day) {
-        const items = day.items.map((item) => (item.uid === itemUid ? { ...item, exerciseId } : item));
+        const items = day.items.map((item) => (item.uid === itemUid ? swap(item, exerciseId) : item));
         await db.routineDays.put({ ...day, items });
       }
     }
@@ -175,4 +181,10 @@ export async function toggleSkip(sessionId: number, itemUid: string): Promise<vo
 
 export async function dismissFlag(exerciseId: string): Promise<void> {
   await db.flags.delete(exerciseId);
+}
+
+/** Registro de dolor o síntomas fuera de una sesión. */
+export async function addCheckin(input: Omit<CheckIn, 'id' | 'date' | 'at'>): Promise<void> {
+  const now = Date.now();
+  await db.checkins.add({ ...input, date: toDateKey(now), at: now });
 }

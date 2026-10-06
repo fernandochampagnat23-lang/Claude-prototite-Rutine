@@ -11,6 +11,9 @@ import { PreStep } from './today/PreStep';
 import { WarmupStep } from './today/WarmupStep';
 import { ExercisesStep } from './today/ExercisesStep';
 import { PostStep } from './today/PostStep';
+import { MorningBanner, PhaseNotice } from './today/Notices';
+import { CheckinSheet } from '../components/CheckinSheet';
+import { ClipboardPlus } from 'lucide-react';
 import type { Session, SessionStep } from '../types';
 
 const STEPS: { id: SessionStep; label: string }[] = [
@@ -23,6 +26,7 @@ const STEPS: { id: SessionStep; label: string }[] = [
 export function Today() {
   const session = useActiveSession();
   const [finished, setFinished] = useState<Session | null>(null);
+  const [checkin, setCheckin] = useState(false);
   useWakeLock(!!session);
 
   if (session === undefined) return null;
@@ -30,9 +34,15 @@ export function Today() {
   if (!session) {
     return (
       <div className="space-y-4">
+        <MorningBanner />
         {finished && <SessionSummary session={finished} onClose={() => setFinished(null)} />}
+        <PhaseNotice />
         <StartCard />
+        <Button size="lg" className="w-full" onClick={() => setCheckin(true)}>
+          <ClipboardPlus size={22} aria-hidden /> Registrar dolor sin entrenar
+        </Button>
         <Disclaimer />
+        <CheckinSheet open={checkin} onClose={() => setCheckin(false)} />
       </div>
     );
   }

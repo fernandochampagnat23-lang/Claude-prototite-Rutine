@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { savePreCheck } from '../../db/actions';
 import { Button, StickyAction } from '../../components/ui';
 import { PainCheckForm, draftToCheck, type PainDraft } from '../../components/PainCheckForm';
+import { useSymptomAlert } from '../../components/Alerts';
 import type { PainCheck, Session } from '../../types';
 
 export function PreStep({ session, onSaved }: { session: Session; onSaved: (check: PainCheck) => void }) {
@@ -11,9 +12,11 @@ export function PreStep({ session, onSaved }: { session: Session; onSaved: (chec
     symptoms: session.pre?.symptoms ?? [],
   }));
 
+  const alert = useSymptomAlert();
   const save = async () => {
     const check = draftToCheck(draft);
     await savePreCheck(session.id!, check);
+    alert.check(check.symptoms);
     onSaved(check);
   };
 

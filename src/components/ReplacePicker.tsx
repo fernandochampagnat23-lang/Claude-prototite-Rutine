@@ -10,12 +10,15 @@ export function ReplacePicker({
   dayId,
   itemUid,
   sessionId,
+  existingIds = [],
   onDone,
 }: {
   exerciseId: string;
   dayId: number;
   itemUid: string;
   sessionId?: number;
+  /** Ejercicios que ya están en el día, para avisarlo. */
+  existingIds?: string[];
   onDone?: () => void;
 }) {
   const [alsoRoutine, setAlsoRoutine] = useState(true);
@@ -34,7 +37,10 @@ export function ReplacePicker({
           }}
         >
           <ArrowRightLeft size={18} aria-hidden className="shrink-0" />
-          {EXERCISES_BY_ID[id]?.name ?? id}
+          <span>
+            {EXERCISES_BY_ID[id]?.name ?? id}
+            {existingIds.includes(id) && <span className="block text-sm font-normal text-muted">Ya está en este día</span>}
+          </span>
         </Button>
       ))}
       {sessionId !== undefined && (

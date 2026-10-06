@@ -238,6 +238,7 @@ export function ExerciseCard({
           dayId={session.dayId}
           itemUid={item.uid}
           sessionId={sessionId}
+          existingIds={session.items.map((i) => i.exerciseId)}
           onDone={() => setReplacing(false)}
         />
       </Sheet>

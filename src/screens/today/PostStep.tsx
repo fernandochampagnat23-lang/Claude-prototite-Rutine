@@ -9,6 +9,7 @@ import { evaluateSession } from '../../logic/goldenRule';
 import { Button, Chip, SectionTitle, StickyAction } from '../../components/ui';
 import { PainCheckForm, draftToCheck, emptyPainDraft, type PainDraft } from '../../components/PainCheckForm';
 import { WalkCard } from './WalkCard';
+import { useSymptomAlert } from '../../components/Alerts';
 import type { Session, Trigger } from '../../types';
 
 const TRIGGERS = Object.keys(TRIGGER_LABELS) as Trigger[];
@@ -20,6 +21,7 @@ export function PostStep({ session, onFinished }: { session: Session; onFinished
   const [notes, setNotes] = useState(session.notes);
   const [picked, setPicked] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const alert = useSymptomAlert();
 
   const verdict = draft.score !== undefined ? evaluateSession(session.pre?.score, draft.score, events ?? []) : null;
   const doneExercises = [...new Set(session.items.filter((i) => !session.skipped.includes(i.uid)).map((i) => i.exerciseId))];
@@ -33,7 +35,10 @@ export function PostStep({ session, onFinished }: { session: Session; onFinished
         notes: notes.trim(),
         pickedSuspects: picked,
       });
-      if (finished) onFinished(finished);
+      if (finished) {
+        onFinished(finished);
+        alert.check(finished.post?.symptoms ?? []);
+      }
     } finally {
       setSaving(false);
     }
